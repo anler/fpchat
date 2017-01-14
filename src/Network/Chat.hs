@@ -1,4 +1,8 @@
-module Network.Chat where
+module Network.Chat
+  (
+    runServer
+  , ChatConfig(..)
+  ) where
 
-someFunc :: IO ()
-someFunc = putStrLn "Hello there from someFunc"
+import Network.Chat.Server
+import Network.Chat.Config
