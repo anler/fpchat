@@ -1,6 +1,6 @@
 module Main where
 
-import Lib
+import Network.Chat
 
 main :: IO ()
 main = someFunc
