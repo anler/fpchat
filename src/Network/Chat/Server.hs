@@ -37,8 +37,8 @@ runServer ChatConfig { port } = withSocketsDo $ do
 
 handleClient :: ServerState -> Handle -> IO ()
 handleClient state handle = do
-  nick <- genClientNick state
-  B.hPutStrLn handle ("Welcome to fpchat! You're identified with nick: " `B.append` nick)
+  nick <- newClient state handle
+  B.hPutStrLn handle ("Welcome to fpchat! You're identified with nick: " ++ nick)
   loop
   where
     loop = do
@@ -50,10 +50,29 @@ handleClient state handle = do
           B.hPutStrLn handle ("400 Unrecognised command")
           loop
 
-    handleCmd cmd = do
-      case cmd of
-        Quit msg -> return ()
-        _        -> loop
+    handleCmd (Quit msg) = do
+      -- notify i'm leaving
+      return ()
+
+    handleCmd AskNick = do
+      -- find nick in state
+      loop
+
+    handleCmd (SetNick newnick) = do
+      -- set nick in state
+      loop
+
+    handleCmd (Msg msg) = do
+      -- send message to all
+      loop
+
+    handleCmd Names = do
+      -- list names
+      loop
+
+    handleCmd (Kick nick) = do
+      -- kick user with nick
+      loop
 
 putStrLn :: B.ByteString -> IO ()
 putStrLn s = B.hPutStrLn stdout s

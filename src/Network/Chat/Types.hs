@@ -2,15 +2,17 @@
 module Network.Chat.Types
   (
     initServerState
-  , genClientNick
+  , newClient
   , ServerState
   , Command(..)
   , User(..)
   ) where
 
 import           Control.Concurrent
-import qualified Data.ByteString    as B
-import qualified Data.Set           as Set
+import           Control.Concurrent.MVar
+import qualified Data.ByteString.Char8   as B
+import qualified Data.Map                as Map
+import           System.IO               (Handle)
 
 data Command a =
   AskNick
@@ -21,15 +23,28 @@ data Command a =
   | Kick a
   deriving (Show, Eq)
 
-data ServerState = ServerState (MVar (Set.Set User))
+data ServerState = ServerState (MVar (Map.Map Nick User))
 
-data User = User B.ByteString deriving Show
+data User = User Nick Handle deriving Show
+
+type Nick = B.ByteString
 
 initServerState :: IO ServerState
 initServerState = seq users $ ServerState <$> newMVar users
   where
-    users = Set.empty
+    users = Map.empty
 
-genClientNick :: ServerState -> IO B.ByteString
-genClientNick _ = return "anon1"
+newClient :: ServerState -> Handle -> IO Nick
+newClient (ServerState m) handle = do
+  users <- takeMVar m
+  nick <- genNick users (Map.size users)
+  let newState = Map.insert nick (User nick handle) users
+  putMVar m newState
+  seq newState $ return nick
 
+genNick :: Map.Map Nick User -> Int -> IO Nick
+genNick users n = do
+  let nick = "anon" `B.append` B.pack (show n)
+  if nick `Map.member` users
+    then genNick users (succ n)
+    else return nick
