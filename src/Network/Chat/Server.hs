@@ -23,6 +23,7 @@ runServer ChatConfig { port } = withSocketsDo $ do
   state <- initServerState
   socket <- listenOn (asPort port)
   putStrLn $ "Server running on port " ++ showB port
+  _ <- forkIO $ handleNotifications state
   forever $ do
     (handle, host, clientPort) <- accept socket
     let orig = B.pack host ++ ": " ++ showB clientPort
@@ -51,8 +52,8 @@ handleClient state handle = do
           loop
 
     handleCmd (Quit msg) = do
-      -- notify i'm leaving
-      return ()
+      notify state (UserLeft handle msg)
+      removeClient state handle
 
     handleCmd AskNick = do
       -- find nick in state
