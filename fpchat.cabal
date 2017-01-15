@@ -17,12 +17,14 @@ library
   hs-source-dirs:      src
   exposed-modules:     Network.Chat
                      , Network.Chat.Parsers
-                     , Network.Chat.Commands
+                     , Network.Chat.Types
                      , Network.Chat.Config
                      , Network.Chat.Server
   build-depends:       base >= 4.7 && < 5
                      , parsec
                      , bytestring
+                     , network
+                     , containers
   default-language:    Haskell2010
 
 executable fpchat-exe

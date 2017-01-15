@@ -4,5 +4,5 @@ module Network.Chat
   , ChatConfig(..)
   ) where
 
-import Network.Chat.Server
-import Network.Chat.Config
+import           Network.Chat.Config
+import           Network.Chat.Server

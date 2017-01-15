@@ -1,10 +1,9 @@
 module Network.Chat.Parsers where
 
-import Text.Parsec
-import Text.Parsec.ByteString
-import Data.ByteString
+import           Text.Parsec
+import           Text.Parsec.ByteString
 
-import Network.Chat.Commands
+import           Network.Chat.Types
 
 nick :: Parser (Command String)
 nick = string "nick" *> (done <|> nickName)

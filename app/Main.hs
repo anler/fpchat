@@ -1,7 +1,7 @@
 module Main where
 
-import Network.Chat
-import Options.Applicative
+import           Network.Chat
+import           Options.Applicative
 
 chatOptions :: Parser ChatConfig
 chatOptions = ChatConfig

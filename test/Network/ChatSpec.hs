@@ -2,13 +2,13 @@
 
 module Network.ChatSpec where
 
-import Text.Parsec (parse)
-import Data.Either (isLeft)
+import           Data.Either          (isLeft)
+import           Text.Parsec          (parse)
 
 import qualified Network.Chat.Parsers as P
-import Network.Chat.Commands
+import           Network.Chat.Types
 
-import Test.Hspec
+import           Test.Hspec
 
 parses = (`parse` "")
 
