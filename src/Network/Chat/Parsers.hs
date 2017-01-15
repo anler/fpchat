@@ -1,5 +1,6 @@
 module Network.Chat.Parsers where
 
+import           Data.ByteString.Char8  as B
 import           Text.Parsec
 import           Text.Parsec.ByteString
 
@@ -28,6 +29,11 @@ quit = string "quit" *> quitMessage <* eof
 
 kick :: Parser (Command String)
 kick = Kick <$> (string "kick" *> space *> anythingButEof)
+
+parseCmd :: B.ByteString -> Either ParseError (Command String)
+parseCmd = parse commands ""
+  where
+    commands = choice [nick, msg, names, quit, kick]
 
 anythingButSpace :: Parser String
 anythingButSpace = many1 (noneOf " ")
